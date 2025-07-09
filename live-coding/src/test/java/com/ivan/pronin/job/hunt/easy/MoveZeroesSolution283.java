@@ -9,6 +9,12 @@ import org.junit.jupiter.api.Test;
  */
 public class MoveZeroesSolution283 {
 
+    /*
+     * Given an integer array nums, move all 0's to the end of it while maintaining
+     * the relative order of the non-zero elements.
+     *
+     * Note that you must do this in-place without making a copy of the array.
+     */
     // (two-pointer, optimal O(n))
     public void moveZeroes(int[] nums) {
         int insertPos = 0; // позиция, куда ставим следующий ненулевой элемент
@@ -26,7 +32,7 @@ public class MoveZeroesSolution283 {
         }
     }
 
-//    Альтернативный (swap-based) подход:
+    //    Альтернативный (swap-based) подход:
     public void moveZeroesAlt(int[] nums) {
         int left = 0;
 
