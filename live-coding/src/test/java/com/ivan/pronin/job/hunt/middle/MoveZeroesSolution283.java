@@ -1,4 +1,4 @@
-package com.ivan.pronin.job.hunt.easy;
+package com.ivan.pronin.job.hunt.middle;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

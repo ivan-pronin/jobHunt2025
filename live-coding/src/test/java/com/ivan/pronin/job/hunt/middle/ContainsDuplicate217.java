@@ -1,4 +1,4 @@
-package com.ivan.pronin.job.hunt.easy;
+package com.ivan.pronin.job.hunt.middle;
 
 import java.util.Arrays;
 import java.util.BitSet;
