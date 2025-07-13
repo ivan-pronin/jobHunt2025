@@ -40,6 +40,10 @@ public class ImplementStackUsingQueue225 {
 
         // Push element onto stack
         public void push(Integer x) {
+            // Add the new element to the empty queue (q2)
+            // and then move all elements from q1 to q2
+            // so that the new element is at the front of q1
+            // This ensures that the last pushed element is always on top
             q2.offer(x);
             while (!q1.isEmpty()) {
                 q2.offer(q1.poll());
@@ -113,4 +117,14 @@ public class ImplementStackUsingQueue225 {
         assertFalse(stack.isEmpty());
     }
 
+    @Test
+    void someTest(){
+        Queue<Integer> q1 = new LinkedList<>();
+        q1.offer(1);
+        q1.offer(2);
+        q1.offer(3);
+        System.out.println(q1.poll());
+        System.out.println(q1.poll());
+        System.out.println(q1.poll());
+    }
 }
