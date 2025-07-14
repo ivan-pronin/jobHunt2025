@@ -53,8 +53,7 @@ public class DesignTwitter355 {
         private final Map<Integer, List<Tweet>> tweets = new HashMap<>();
 
         public void postTweet(int userId, int tweetId) {
-            tweets.putIfAbsent(userId, new ArrayList<>());
-            tweets.get(userId).add(new Tweet(tweetId, timestamp++));
+            tweets.computeIfAbsent(userId, k -> new ArrayList<>()).add(new Tweet(tweetId, timestamp++));
         }
 
         public List<Integer> getNewsFeed(int userId) {
@@ -89,11 +88,6 @@ public class DesignTwitter355 {
 
     @Test
     public void testTwitterBasicFlow() {
-        Semaphore ss = new Semaphore(1);
-        CountDownLatch f = new CountDownLatch(1);
-        Phaser ph = new Phaser(1);
-        ReentrantLock ll = new ReentrantLock();
-
         Twitter twitter = new Twitter();
 
         twitter.postTweet(1, 5);

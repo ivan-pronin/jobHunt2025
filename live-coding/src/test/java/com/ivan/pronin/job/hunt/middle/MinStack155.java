@@ -1,5 +1,7 @@
 package com.ivan.pronin.job.hunt.middle;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Stack;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +115,45 @@ public class MinStack155 {
 
         pop();
         assertEquals(2, getMin());
+    }
+
+    @Test
+    void testMixedValues() {
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.offer(1);
+        stack.offer(2);
+        stack.offer(3);
+        System.out.println(stack.poll());
+        System.out.println(stack.poll());
+        System.out.println(stack.poll());
+    }
+
+    private static class MinStackDeque{
+        private final Deque<Integer> stack = new ArrayDeque<>();
+        private final Deque<Integer> minStack = new ArrayDeque<>();
+
+        public void push(int val) {
+            stack.push(val);
+            if (minStack.isEmpty() || val <= minStack.peek()) {
+                minStack.push(val);
+            } else {
+                minStack.push(minStack.peek());
+            }
+        }
+
+        public void pop() {
+            stack.pop();
+            stack.poll();
+            minStack.pop();
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return minStack.peek();
+        }
     }
 
 }
