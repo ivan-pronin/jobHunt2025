@@ -18,4 +18,9 @@ public class Node {
         this.neighbors = new ArrayList<>();
     }
 
+    @Override
+    public String toString(){
+        return "Node: " + val;
+    }
+
 }

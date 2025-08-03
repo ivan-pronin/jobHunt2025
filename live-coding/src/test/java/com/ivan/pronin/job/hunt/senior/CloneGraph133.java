@@ -1,9 +1,11 @@
 package com.ivan.pronin.job.hunt.senior;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import com.ivan.pronin.job.hunt.senior.model.Node;
@@ -111,10 +113,47 @@ public class CloneGraph133 {
         return true;
     }
 
+    private static class Neetcode {
+        public Node cloneGraph(Node node) {
+            if (node == null) return null;
+            if (node.neighbors == null || node.neighbors.isEmpty()) return new Node(node.val);
+
+            Queue<Node> q = new ArrayDeque<>();
+            Map<Integer, Node> parents = new HashMap<>();
+            q.offer(node);
+            parents.put(node.val, new Node(node.val));
+
+            System.out.println("Parents: " + parents);
+
+            while(!q.isEmpty()){
+                Node curr = q.poll();
+                System.out.println("Processing curr: " + curr.val + ". Que: " + q);
+                int v = curr.val;
+                for (Node n : curr.neighbors){
+                    if (!parents.containsKey(n.val)) {
+                        q.offer(n);
+                        parents.put(n.val, new Node(n.val));
+                    }
+                    parents.get(v).neighbors.add(parents.get(n.val));
+                }
+                System.out.println("Finished processing curr: " + curr.val + ". Que: " + q + " parents: " + parents);
+            }
+            return parents.get(node.val);
+        }
+    }
     @Test
     public void testDFSClone() {
         Node original = buildSimpleGraph();
         var solution = new DfsSolution();
+        Node clone = solution.cloneGraph(original);
+        assertNotSame(original, clone);
+        assertTrue(areGraphsEqual(original, clone, new HashSet<>()));
+    }
+
+    @Test
+    public void testNeetcode() {
+        Node original = buildSimpleGraph();
+        var solution = new Neetcode();
         Node clone = solution.cloneGraph(original);
         assertNotSame(original, clone);
         assertTrue(areGraphsEqual(original, clone, new HashSet<>()));

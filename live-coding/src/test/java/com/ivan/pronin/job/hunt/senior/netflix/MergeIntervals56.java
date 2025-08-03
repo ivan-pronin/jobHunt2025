@@ -58,4 +58,9 @@ public class MergeIntervals56 {
         ));
     }
 
+    @Test
+    public void testExamples2() {
+        int[][] arr = new int[][]{{1, 3}, {2, 6}, {8, 10}, {15, 18}};
+        System.out.println(Arrays.toString(arr[0]));
+    }
 }

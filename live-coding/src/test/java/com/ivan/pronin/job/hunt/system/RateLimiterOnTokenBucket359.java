@@ -1,5 +1,7 @@
 package com.ivan.pronin.job.hunt.system;
 
+import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -12,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Ivan Pronin
  * @since 15.07.2025
  */
-public class RateLimiterOnTokenBucket {
+public class RateLimiterOnTokenBucket359 {
 
     /*
      * 🧠 Суть задачи
@@ -89,7 +91,6 @@ public class RateLimiterOnTokenBucket {
             this.timestamps = new LinkedList<>();
             System.out.println("refillIntervalNanos=" + refillIntervalNanos);
             System.out.println("refillIntervalNanos * capacity=" + refillIntervalNanos * capacity);
-
         }
 
         public synchronized boolean allowRequest() {
@@ -100,7 +101,7 @@ public class RateLimiterOnTokenBucket {
             // Удаляем устаревшие токены
             var refillsCount = 0L;
             if (!timestamps.isEmpty()) refillsCount = Math.min(capacity, (now - lastRefillTsNanos) / refillIntervalNanos);
-            while (!timestamps.isEmpty() && now- timestamps.peekFirst() >= refillIntervalNanos & refills < refillsCount) {
+            while (!timestamps.isEmpty() && now - timestamps.peekFirst() >= refillIntervalNanos & refills < refillsCount) {
                 System.out.println("Removing timestamp: " + timestamps.peekFirst() + " with diff: " + (now - timestamps.peekFirst()));
                 if (refills < refillsCount) {
                     timestamps.pollFirst();
@@ -130,6 +131,108 @@ public class RateLimiterOnTokenBucket {
         assertFalse(limiter.allowRequest());
 
         Thread.sleep(1100); // wait for 1 token
+        assertTrue(limiter.allowRequest());
+        assertFalse(limiter.allowRequest());
+    }
+
+    private static class DequeSolution2 {
+
+        private final int allowedRequestsPerSec;
+
+        private final Deque<Long> requests = new ArrayDeque<>();
+
+        private DequeSolution2(int allowedRequestsPerSec) {
+            this.allowedRequestsPerSec = allowedRequestsPerSec;
+        }
+
+        public synchronized boolean allowRequest() {
+            var now = Instant.now().toEpochMilli();
+            var windowStart = now - 1000;
+            // remove old timestamps that more than 1 sec old
+            // get size of ts
+            // if size < capac = allow
+            // add to que
+            while (!requests.isEmpty() && requests.peek() < windowStart) {
+                requests.poll();
+            }
+            if (requests.size() < allowedRequestsPerSec) {
+                requests.add(now);
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    @Test
+    public void testAllowRequest3() throws InterruptedException {
+        var limiter = new DequeSolution2(2); // 2 tokens max, 1 per second
+
+        assertTrue(limiter.allowRequest());
+        assertTrue(limiter.allowRequest());
+        assertFalse(limiter.allowRequest());
+
+        Thread.sleep(1100); // wait for 1 token
+        assertTrue(limiter.allowRequest());
+        assertTrue(limiter.allowRequest());
+        assertFalse(limiter.allowRequest());
+        Thread.sleep(900);
+        Thread.sleep(200);
+        assertTrue(limiter.allowRequest());
+    }
+
+    private static class RefillBuckeSolution2 {
+
+        private int refillRatePerSec = 1;
+
+        private int capacity;
+
+        private int tokens;
+
+        private long lastRefillTs;
+
+        RefillBuckeSolution2(int capacity, int refillRatePerSec) {
+            this.capacity = capacity;
+            this.refillRatePerSec = refillRatePerSec;
+        }
+
+        public boolean allowRequest() {
+            refillBucket();
+            if (tokens > 0) {
+                tokens--;
+                return true;
+            }
+            return false;
+        }
+
+        private void refillBucket(){
+            long refillTs = Instant.now().toEpochMilli();
+            long refillDiff = refillTs - lastRefillTs;
+            int refillCount = ((int) refillDiff / 1000) * refillRatePerSec;
+            int tokensToAdd = Math.min(capacity, refillCount);
+            if (tokensToAdd > 0){
+                lastRefillTs = refillTs;
+                tokens = tokens + tokensToAdd;
+            }
+        }
+
+    }
+
+    @Test
+    public void testRefillBucket() throws InterruptedException {
+        var limiter = new RefillBuckeSolution2(2, 1); // 2 tokens max, 1 per second
+
+        assertTrue(limiter.allowRequest());
+        assertTrue(limiter.allowRequest());
+        assertFalse(limiter.allowRequest());
+
+        Thread.sleep(1100); // wait for 1 token
+        assertTrue(limiter.allowRequest());
+        assertFalse(limiter.allowRequest());
+        Thread.sleep(100);
+        assertFalse(limiter.allowRequest());
+        Thread.sleep(1901);
+        assertTrue(limiter.allowRequest());
         assertTrue(limiter.allowRequest());
         assertFalse(limiter.allowRequest());
     }
