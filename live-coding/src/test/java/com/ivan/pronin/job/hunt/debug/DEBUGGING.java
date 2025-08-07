@@ -3,6 +3,7 @@ package com.ivan.pronin.job.hunt.debug;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,6 +34,16 @@ public class DEBUGGING {
         private static SingletonLazy instance;
 
         private SingletonLazy() {
+            Object o = new Object();
+            BitSet bs = new BitSet();
+            List<Object> ll = new ArrayList<>();
+            ll.add("ss");
+            ll.add(2);
+            List<String> ss = new ArrayList<>();
+            ss.add("aaa");
+            ll.addAll(ss);
+            List<? extends Number> nn = new ArrayList<>();
+            final Number number = nn.get(1);
         }
 
         public static SingletonLazy get() {

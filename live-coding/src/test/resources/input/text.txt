@@ -1,0 +1,4 @@
+first line 111;
+second line 222;
+third line 333;
+finish (fourth line 444).

@@ -3,6 +3,7 @@ package com.ivan.pronin.job.hunt.senior;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -53,6 +54,8 @@ public class SlidingWindowMax239 {
         Deque<Integer> deque = new ArrayDeque<>();
         int[] result = new int[nums.length - k + 1];
         int ri = 0;
+
+        var m = new LinkedHashMap<>(2, 0.75f, true);
 
         for (int i = 0; i < nums.length; i++) {
             // Удаляем элементы вне окна

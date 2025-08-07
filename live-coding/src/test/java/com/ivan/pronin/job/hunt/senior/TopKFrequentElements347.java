@@ -94,4 +94,11 @@ public class TopKFrequentElements347 {
         assertUnorderedEquals(new int[]{1, 2}, topKFrequent(new int[]{1, 2, 2, 3, 1, 1, 2}, 2));
     }
 
+    @Test
+    public void testBucketSolution2() {
+        assertUnorderedEquals(new int[]{1, 2}, topKFrequentBucket(new int[]{1, 1, 1, 2, 2, 2, 3,3, 3, 4}, 2));
+        assertUnorderedEquals(new int[]{1}, topKFrequent(new int[]{1}, 1));
+        assertUnorderedEquals(new int[]{1, 2}, topKFrequent(new int[]{1, 2, 2, 3, 1, 1, 2}, 2));
+    }
+
 }
