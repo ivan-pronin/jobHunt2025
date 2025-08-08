@@ -100,7 +100,7 @@ public class BoxLogAggregator2 {
             PrintStream printOut = new PrintStream(testOut)
         ) {
             System.setIn(testIn);
-//            System.setOut(printOut);
+            System.setOut(printOut);
 
             this.run();
 

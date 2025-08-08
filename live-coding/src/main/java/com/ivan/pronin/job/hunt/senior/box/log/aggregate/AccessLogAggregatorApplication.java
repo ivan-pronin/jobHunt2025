@@ -33,6 +33,7 @@ public class AccessLogAggregatorApplication {
         }
         var aggregatedLog = accessLogAggregator.getAggregatedLog(accessLogRecorder.getAll());
         accessLogPrinter.printResult(aggregatedLog);
+        sc.close();
         return aggregatedLog;
     }
 
