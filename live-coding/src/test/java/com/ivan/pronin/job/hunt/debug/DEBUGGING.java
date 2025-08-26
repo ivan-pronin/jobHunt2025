@@ -15,8 +15,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -86,6 +88,44 @@ public class DEBUGGING {
     }
 
     @Test
+    public void testParallel() throws InterruptedException {
+        List<Integer> list = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(2);
+        Runnable r1 = () -> {
+            try {
+                latch.countDown();
+                latch.await();
+                System.out.println("Startet t1");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            for (int i = 0; i < 100; i++){
+                list.add(ThreadLocalRandom.current().nextInt(10));
+                System.out.println(list.size());
+            }
+        };
+        Runnable r2 = () -> {
+            try {
+                latch.countDown();
+                latch.await();
+                System.out.println("Startet t2");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            for (int i = 0; i < 100; i++){
+                list.remove((Object) ThreadLocalRandom.current().nextInt(10));
+            }
+        };
+        Thread t1 = new Thread(r1);
+        Thread t2 = new Thread(r2);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println("Size: "  + list.size() );
+    }
+
+    @Test
     void testStringChars() {
         Map<String, Integer> mmm = new HashMap<>();
 
@@ -113,6 +153,7 @@ public class DEBUGGING {
     @Test
     void listToArray() {
         List<Integer> result = new ArrayList<>();
+        result.getFirst();
         int[] res = result.stream().mapToInt(i -> i).toArray(); // list to int[]
         result.add(1);
         result.add(2);
