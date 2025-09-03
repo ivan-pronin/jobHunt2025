@@ -1,6 +1,9 @@
 package com.ivan.pronin.job.hunt.senior;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -76,10 +79,28 @@ public class LongestIncreasingSubsequence300 {
         return size;
     }
 
+    public int lengthOfLISCollectionsSort(int[] nums) {
+        // tails[i] = the smallest possible tail of an increasing subsequence of length i+1
+        List<Integer> tails = new ArrayList<>();
+
+        for (int num : nums) {
+            int idx = Collections.binarySearch(tails, num);
+            if (idx < 0) idx = -idx - 1; // if not found, binarySearch returns (-(insertion point) - 1)
+            if (idx == tails.size()) {
+                tails.add(num); // new longer subsequence
+            } else {
+                tails.set(idx, num); // replace to keep tails optimal
+            }
+        }
+
+        return tails.size(); // size of tails = length of LIS
+    }
+
     @Test
     public void testLIS_DP() {
         assertEquals(4, lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
         assertEquals(4, lengthOfLISBinarySearch(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
+        assertEquals(4, lengthOfLISCollectionsSort(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
         assertEquals(1, lengthOfLIS(new int[]{3, 3, 3, 3}));
         assertEquals(6, lengthOfLIS(new int[]{1, 3, 6, 7, 9, 4, 10, 5, 6}));
         assertEquals(6, lengthOfLISBinarySearch(new int[]{1, 3, 6, 7, 9, 4, 10, 5, 6}));
